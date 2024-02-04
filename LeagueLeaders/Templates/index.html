@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Web Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .category {
+            flex: 1;
+            margin: 20px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            max-width: calc(33.33% - 40px); /* Three columns layout */
+            box-sizing: border-box;
+            flex-basis: calc(33.33% - 40px); /* Three columns layout */
+        }
+
+        .player-box {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px;
+            background-color: #f9f9f9;
+            text-align: center;
+            flex: 1; /* Equal width for all player boxes */
+            min-width: 200px; /* Minimum width for player boxes */
+        }
+
+        h2 {
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin-top: 0;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+
+        p {
+            margin: 5px 0;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        li {
+            flex: 1;
+            margin: 10px;
+            box-sizing: border-box;
+        }
+
+        img {
+            max-width: 100%;
+            max-height: 150px; /* Set the maximum height for the images */
+            display: block; /* To center the images horizontally */
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>League Leaders</h1>
+
+    <div class="container">
+        {% for category_data in formatted_data %}
+        <div class="category">
+            <h2>{{ category_data.category }}</h2>
+            <ul>
+                {% for player in category_data.players %}
+                <li class="player-box">
+                    <strong>Player ID:</strong> {{ player.id }}<br>
+                    <strong>Name:</strong> {{ player.name }}<br>
+                    <strong>Team:</strong> {{ player.team }}<br>
+                    <strong>Position:</strong> {{ player.position }}<br>
+                    <strong>Value:</strong> {{ player.value }}<br>
+                    <strong>Headshot:</strong> <img src="{{ player.headshot }}" alt="Player Headshot"><br>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

@@ -15,6 +15,7 @@ category_mapping = {
     "plusMinus": "Plus/Minus",
     "assists": "Assists",
     "goalsPp": "PP Goals",
+    "points": "Points",
     "faceoffLeaders": "FO %",
     "penaltyMins": "Penalty Minutes",
     "goals": "Goals",
@@ -35,9 +36,20 @@ for original_category, players in pretty_json.items():
     # Print the new category name with enhanced formatting
     print(f"{category_color}Category: {new_category}{reset_color}\n")
     for player in players:
+        print(f"Player ID: {player['id']}")
         print(f"Name: {player['firstName']['default']} {player['lastName']['default']}")
         print(f"Team: {player['teamName']['default']} ({player['teamAbbrev']})")
         print(f"Position: {player['position']}")
-        print(f"Value: {player['value']}")
+
+        if original_category == "faceoffLeaders":
+            # Convert the "value" to a percentage for the "faceoffLeaders" category
+            value_decimal = player["value"]
+            value_percentage = value_decimal * 100
+            print(f"Value: {value_percentage:.2f}%")
+        else:
+            # Keep all other "value" fields as decimals
+            value_decimal = player["value"]
+            print(f"Value: {value_decimal:.2f}")  # Display as a decimal
+
         print(f"Headshot: {player['headshot']}")
         print("\n")
