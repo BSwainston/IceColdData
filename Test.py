@@ -1,55 +1,39 @@
 import requests
-import json
-from pprint import pprint
-import pandas as pd
+import numpy as np
+from sklearn.linear_model import LogisticRegression
 
-leagueLeader_url = "https://api-web.nhle.com/v1/skater-stats-leaders/current"
+# Define the URL for the API
+url = "https://api.nhle.com/stats/rest/en/team/summary?sort=shotsForPerGame&cayenneExp=seasonId=20232024%20and%20gameTypeId=2"
 
-# ANSI escape codes for text color
-category_color = "\033[1;34m"  # Blue color
-reset_color = "\033[0m"  # Reset color to default
+# Send a GET request to the API
+response = requests.get(url)
 
-# Dictionary to map original category names to new names
-category_mapping = {
-    "goalsSh": "SH Goals",
-    "plusMinus": "Plus/Minus",
-    "assists": "Assists",
-    "goalsPp": "PP Goals",
-    "points": "Points",
-    "faceoffLeaders": "FO %",
-    "penaltyMins": "Penalty Minutes",
-    "goals": "Goals",
-    "toi": "Time On Ice",
-    # Add more mappings as needed
-}
+# Check if the request was successful
+if response.status_code == 200:
+    # Parse the JSON response
+    data = response.json()
 
-team_response = requests.get(leagueLeader_url)
+    # Create a dictionary to store each team's data
+    team_data = {}
 
-pretty_json = json.loads(team_response.text)
+    # Iterate through the teams in the data
+    for team in data["data"]:
+        team_name = team["teamFullName"]
+        team_data[team_name] = team
 
-# print(json.dumps(pretty_json, indent=4))
+    # Now you can access each team's data using their name as the key
+    team1_data = team_data.get("San Jose Sharks")
+    team2_data = team_data.get("Chicago Blackhawks")
 
-for original_category, players in pretty_json.items():
-    # Get the corresponding new category name from the mapping
-    new_category = category_mapping.get(original_category, original_category)
+    # Example: Accessing specific data for team 1
+    print("Team 1 Name:", team1_data["teamFullName"])
+    print("Team 1 Wins:", team1_data["wins"])
+    print("Team 1 Goals For Per Game:", team1_data["goalsForPerGame"])
 
-    # Print the new category name with enhanced formatting
-    print(f"{category_color}Category: {new_category}{reset_color}\n")
-    for player in players:
-        print(f"Player ID: {player['id']}")
-        print(f"Name: {player['firstName']['default']} {player['lastName']['default']}")
-        print(f"Team: {player['teamName']['default']} ({player['teamAbbrev']})")
-        print(f"Position: {player['position']}")
+    # Example: Accessing specific data for team 2
+    print("Team 2 Name:", team2_data["teamFullName"])
+    print("Team 2 Wins:", team2_data["wins"])
+    print("Team 2 Goals For Per Game:", team2_data["goalsForPerGame"])
 
-        if original_category == "faceoffLeaders":
-            # Convert the "value" to a percentage for the "faceoffLeaders" category
-            value_decimal = player["value"]
-            value_percentage = value_decimal * 100
-            print(f"Value: {value_percentage:.2f}%")
-        else:
-            # Keep all other "value" fields as decimals
-            value_decimal = player["value"]
-            print(f"Value: {value_decimal:.2f}")  # Display as a decimal
-
-        print(f"Headshot: {player['headshot']}")
-        print("\n")
+else:
+    print("Failed to fetch data from the API")
